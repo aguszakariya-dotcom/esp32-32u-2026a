@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1400" viewBox="0 0 1000 1400">
+  <style>
+    .bg { fill:#f7f8fb }
+    .block { rx:10; ry:10; stroke:#2b2b2b; stroke-width:2 }
+    .control { fill:#00bcd4 }
+    .proc { fill:#ffb74d }
+    .logic { fill:#a5d6a7 }
+    .text { font-family: 'Segoe UI', Tahoma, Arial; font-size:14px; fill:#111 }
+    .title { font-weight:700; font-size:18px }
+    .note { font-size:12px; fill:#444 }
+  </style>
+  <rect width="100%" height="100%" class="bg" />
+
+  <text x="30" y="40" class="title">Kodular Blocks — Auto-connect (No ListPicker)</text>
+  <text x="30" y="64" class="note">Use these blocks in Kodular/App Inventor to auto-find paired ESP device and connect.</text>
+
+  <!-- Screen.Initialize -->
+  <g transform="translate(30,90)">
+    <rect class="block control" width="940" height="120"></rect>
+    <text x="20" y="36" class="text">when Screen1.Initialize</text>
+    <text x="20" y="64" class="text">set LabelInfo.Text to "Mencari..."</text>
+    <text x="20" y="92" class="text">call AutoConnect("ESP32-BT-Mobile")</text>
+  </g>
+
+  <!-- Procedure AutoConnect -->
+  <g transform="translate(30,230)">
+    <rect class="block proc" width="940" height="360"></rect>
+    <text x="20" y="36" class="text">procedure AutoConnect(targetName)</text>
+    <text x="40" y="72" class="text">set found to false</text>
+    <text x="40" y="98" class="text">set pairedList to BluetoothClient1.AddressesAndNames</text>
+    <text x="40" y="124" class="text">for each item in pairedList do</text>
+    <text x="60" y="150" class="text">set parts to split at first space (address, name)</text>
+    <text x="60" y="176" class="text">set address to select list item parts index 1</text>
+    <text x="60" y="202" class="text">set name to select list item parts index 2 (or join rest)</text>
+    <text x="60" y="228" class="text">if (name = targetName) or (address = targetName) then</text>
+    <text x="80" y="254" class="text">if BluetoothClient1.Connect(address) then</text>
+    <text x="100" y="280" class="text">set LabelInfo.Text to "BT connected: Yes"</text>
+    <text x="100" y="306" class="text">set found to true</text>
+    <text x="100" y="332" class="text">break loop</text>
+    <text x="40" y="358" class="text">end for</text>
+    <text x="40" y="384" class="text">if not found then set LabelInfo.Text to "tidak ditemukan"</text>
+  </g>
+
+  <!-- Clock Timer block -->
+  <g transform="translate(30,620)">
+    <rect class="block logic" width="940" height="220"></rect>
+    <text x="20" y="36" class="text">when Clock1.Timer (Interval: 500 ms)</text>
+    <text x="40" y="72" class="text">if BluetoothClient1.IsConnected then</text>
+    <text x="60" y="98" class="text">if BluetoothClient1.BytesAvailableToReceive &gt; 0 then</text>
+    <text x="80" y="124" class="text">set msg to BluetoothClient1.ReceiveText(-1)</text>
+    <text x="80" y="150" class="text">if msg contains "BT:CONNECTED" then set LabelInfo.Text to "BT connected: Yes"</text>
+    <text x="80" y="176" class="text">if msg contains "BT:DISCONNECTED" then set LabelInfo.Text to "tidak ditemukan"</text>
+  </g>
+
+  <!-- Button Connect -->
+  <g transform="translate(30,860)">
+    <rect class="block control" width="420" height="120"></rect>
+    <rect class="block control" x="500" width="470" height="120"></rect>
+    <text x="40" y="900" class="text">ButtonConnect.Click</text>
+    <text x="40" y="930" class="text">if BluetoothClient1.Connect("AA:BB:CC:DD:EE:FF") then</text>
+    <text x="60" y="955" class="text">set LabelInfo.Text to "BT connected: Yes"</text>
+    <text x="60" y="981" class="text">else set LabelInfo.Text to "tidak ditemukan"</text>
+
+    <text x="520" y="900" class="text">Optional: Show a progress spinner while connecting</text>
+    <text x="520" y="930" class="text">If Connect returns true, you can also read confirmation message from ESP</text>
+  </g>
+
+  <text x="30" y="1230" class="note">Tip: AddressesAndNames returns paired devices. Pair ESP via Android Bluetooth settings if not shown.</text>
+  <text x="30" y="1252" class="note">Tip: disable Clock1 after confirmed connected to reduce processing.</text>
+</svg>

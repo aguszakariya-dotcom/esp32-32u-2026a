@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200">
+  <style>
+    .blk { fill:#FFE699; stroke:#333; stroke-width:2; rx:8; ry:8 }
+    .proc { fill:#CFE8FF; stroke:#333; stroke-width:2; rx:8; ry:8 }
+    .txt { font-family: Arial, Helvetica, sans-serif; font-size:14px; }
+    .header { font-weight:700; font-size:16px }
+    .foot { font-size:12px; fill:#666 }
+  </style>
+
+  <rect x="20" y="20" width="860" height="90" rx="8" ry="8" fill="#eee" stroke="#ccc"/>
+  <text x="40" y="50" class="txt header">Kodular / App Inventor blocks — Auto-connect (no ListPicker)</text>
+  <text x="40" y="72" class="txt">Flow: Screen.Initialize → AutoConnect(target) → try to Connect paired devices → update LabelInfo</text>
+
+  <!-- Screen.Initialize block -->
+  <rect class="blk" x="40" y="130" width="820" height="110"/>
+  <text class="txt" x="60" y="160">when Screen1.Initialize</text>
+  <text class="txt" x="60" y="185">set LabelInfo.Text to "Mencari..."</text>
+  <text class="txt" x="60" y="210">call AutoConnect("ESP32-BT-Mobile")</text>
+
+  <!-- Procedure block -->
+  <rect class="proc" x="40" y="260" width="820" height="340"/>
+  <text class="txt" x="60" y="290">procedure AutoConnect(targetName)</text>
+  <text class="txt" x="80" y="320">set found to false</text>
+  <text class="txt" x="80" y="345">set pairedList to BluetoothClient1.AddressesAndNames</text>
+  <text class="txt" x="80" y="370">for each item in pairedList:</text>
+  <text class="txt" x="100" y="395">set parts to split at first space (address, name)</text>
+  <text class="txt" x="100" y="420">set address to select list item parts 1</text>
+  <text class="txt" x="100" y="445">set name to select list item parts 2 (or join the rest)</text>
+  <text class="txt" x="100" y="470">if (name = targetName) or (address = targetName) then</text>
+  <text class="txt" x="120" y="495">if BluetoothClient1.Connect(address) then</text>
+  <text class="txt" x="140" y="520">set LabelInfo.Text to "BT connected: Yes"</text>
+  <text class="txt" x="140" y="545">set found to true</text>
+  <text class="txt" x="140" y="570">break loop</text>
+  <text class="txt" x="80" y="605">end for</text>
+  <text class="txt" x="80" y="630">if not found then set LabelInfo.Text to "tidak ditemukan"</text>
+
+  <!-- Clock polling block -->
+  <rect class="blk" x="40" y="640" width="820" height="210"/>
+  <text class="txt" x="60" y="670">Clock1.Timer (interval 500 ms)</text>
+  <text class="txt" x="80" y="695">if BluetoothClient1.IsConnected then</text>
+  <text class="txt" x="100" y="720">if BluetoothClient1.BytesAvailableToReceive > 0 then</text>
+  <text class="txt" x="120" y="745">set msg to BluetoothClient1.ReceiveText(-1)</text>
+  <text class="txt" x="120" y="770">if msg contains "BT:CONNECTED" then set LabelInfo.Text to "BT connected: Yes"</text>
+
+  <!-- Direct connect by address block -->
+  <rect class="blk" x="40" y="870" width="820" height="120"/>
+  <text class="txt" x="60" y="900">/If you know MAC address: on ButtonConnect.Click</text>
+  <text class="txt" x="60" y="925">if BluetoothClient1.Connect("AA:BB:CC:DD:EE:FF") then set LabelInfo.Text to "BT connected: Yes"</text>
+  <text class="txt" x="60" y="950">else set LabelInfo.Text to "tidak ditemukan"</text>
+
+  <text x="40" y="1120" class="foot">Note: BluetoothClient1.AddressesAndNames returns paired devices only.</text>
+  <text x="40" y="1140" class="foot">For discovery of unpaired devices, you need a scanning extension or OS-level pairing flow.</text>
+</svg>
